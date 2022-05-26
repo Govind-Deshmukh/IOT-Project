@@ -1,69 +1,69 @@
-from flask import Flask, url_for,request,render_template,redirect,jsonify
+from flask import (
+    Flask,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for
+)
 
-from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired, Email, Length
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
 
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+    def __repr__(self):
+        return f'<User: {self.username}>'
 
-from flask_bootstrap import Bootstrap
+users = []
+users.append(User(id=1, username='admin', password='12345678'))
+
 
 
 app = Flask(__name__)
-app.secret_key="MagamInfoTech"
-app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-bootstrap = Bootstrap(app)
+app.secret_key = 'somesecretkeythatonlyishouldknow'
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+@app.before_request
+def before_request():
+    g.user = None
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-
-@app.route('/hello')
-def hello():
-    return 'Hello, World!'
+    if 'user_id' in session:
+        user = [x for x in users if x.id == session['user_id']][0]
+        g.user = user
+        
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    if request.method == 'POST':
+        session.pop('user_id', None)
 
-    if form.validate_on_submit():
-        if form.username.data == 'admin' and form.password.data == '12345678':
-            user = User.query.filter_by(username=form.username.data).first()
-            login_user(user)
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = [x for x in users if x.username == username][0]
+        if user and user.password == password:
+            session['user_id'] = user.id
             return redirect(url_for('dashboard'))
-        return '<h1>Invalid username or password</h1>'
-        # user = User.query.filter_by(username=form.username.data).first()
-        # if user:
-        #     if check_password_hash(user.password, form.password.data):
-        #         login_user(user, remember=form.remember.data)
-        #         return redirect(url_for('dashboard'))
 
-        # return '<h1>Invalid username or password</h1>'
+        return redirect(url_for('login'))
 
-    return render_template('login.html', form=form)
+    return render_template('login.html')
 
 @app.route('/dashboard')
-@login_required
 def dashboard():
+    if not g.user:
+        return redirect(url_for('login'))
+
     return render_template('dashboard.html')
 
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    if request.method == "POST":
-        print(request.form.get("logout"))
-    logout_user()
-    #print("hear")
-    return redirect(url_for('login'))
-
+@app.route('/')
+def index():
+    return '<h1>Go to login route (/login)</h1>'
 if __name__ == '__main__':
     app.run(debug=True)

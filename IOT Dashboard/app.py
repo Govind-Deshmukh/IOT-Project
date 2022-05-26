@@ -19,11 +19,12 @@ class User:
 
 users = []
 users.append(User(id=1, username='admin', password='12345678'))
+users.append(User(id=2, username='ayush', password='123456789'))
 
 
 
 app = Flask(__name__)
-app.secret_key = 'somesecretkeythatonlyishouldknow'
+app.secret_key = 'iamgoodboi'
 
 @app.before_request
 def before_request():
@@ -50,7 +51,6 @@ def login():
         if user and user.password == password:
             session['user_id'] = user.id
             return redirect(url_for('dashboard'))
-
         return redirect(url_for('login'))
 
     return render_template('login.html')
@@ -60,10 +60,12 @@ def dashboard():
     if not g.user:
         return redirect(url_for('login'))
 
+    
     return render_template('dashboard.html')
 
 @app.route('/')
 def index():
     return '<h1>Go to login route (/login)</h1>'
+    
 if __name__ == '__main__':
     app.run(debug=True)

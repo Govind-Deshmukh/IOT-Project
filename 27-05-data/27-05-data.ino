@@ -19,14 +19,12 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup()
 {
-  ''
-      // start serial at boud rate of 9600
-      Serial.begin(9600);
-  Serial.println(F("Welcome to my project"));
+  // start serial at boud rate of 9600
+  Serial.begin(9600);
 
   // start msg on display
   lcd.setCursor(0, 0);
-  lcd.print("Welcome to my project");
+  lcd.print("Welcome");
   delay(3000);
   lcd.clear();
 
@@ -36,14 +34,10 @@ void setup()
   Wire.begin();
   if (!bmx280.begin())
   {
-    Serial.println("check your Interface and I2C Address.");
     while (1)
       ;
   }
-  if (bmx280.isBME280())
-    Serial.println("BME280 detected");
-  else
-    Serial.println("BMP280 detected");
+
   bmx280.resetToDefaults();
   bmx280.writeOversamplingPressure(BMx280MI::OSRS_P_x16);
   bmx280.writeOversamplingTemperature(BMx280MI::OSRS_T_x16);
@@ -72,16 +66,10 @@ void loop()
 
   if (isnan(h) || isnan(t))
   {
-    Serial.println(F("Failed to read from DHT"));
+    lcd.setCursor(0, 0);
+    lcd.print("Error");
     return;
   }
-
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F("°C "));
-  Serial.print("\n");
 
   lcd.setCursor(0, 0);
   lcd.print(F("Humidity : "));
@@ -105,7 +93,6 @@ void loop()
   {
     lcd.setCursor(0, 0);
     lcd.print(F("Door is Closed"));
-    Serial.println("Door is Closed");
     delay(4000);
     lcd.clear();
   }
@@ -113,7 +100,6 @@ void loop()
   {
     lcd.setCursor(0, 0);
     lcd.print(F("Door is Open"));
-    Serial.println("Door is Open");
     delay(4000);
     lcd.clear();
   }
@@ -121,12 +107,6 @@ void loop()
   // ======================= UV sensor data from A0 analog pin ==============
   int sensorValue = analogRead(A0);
   float voltage = sensorValue * (5.0 / 1023.0);
-  Serial.print("UV Sensor : ");
-  Serial.print("Voltage = ");
-  Serial.print(voltage);
-  Serial.print(" | UV index = ");
-  Serial.print(voltage / 0.1);
-  Serial.print("\n");
 
   lcd.setCursor(0, 0);
   lcd.print("UV index : ");
@@ -148,11 +128,6 @@ void loop()
   {
   } while (!bmx280.hasValue());
 
-  Serial.print("Pressure: ");
-  Serial.println(bmx280.getPressure());
-  Serial.print("Pressure (64 bit): ");
-  Serial.println(bmx280.getPressure64());
-
   lcd.setCursor(0, 0);
   lcd.print("Pressure reading");
   lcd.setCursor(0, 1);
@@ -162,4 +137,25 @@ void loop()
   // lcd.print(bmx280.getTemperature());
   delay(4000);
   lcd.clear();
+
+  // ====================================== print serial ===========================
+  // Serial.print(F("Humidity: "));
+  Serial.println(h);
+  // Serial.print(F("%  Temperature: "));
+  Serial.println(t);
+  // Serial.print(F("°C "));
+  // Serial.print("\n");
+
+  // Serial.print("UV Sensor : ");
+  // Serial.print("Voltage = ");
+  // Serial.print(voltage);
+  // Serial.print(" | UV index = ");
+  Serial.println(voltage / 0.1);
+  // Serial.print("\n");
+
+  // Serial.print("Pressure: ");
+  // Serial.println(bmx280.getPressure());
+  // Serial.print("Pressure (64 bit): ");
+  Serial.println(bmx280.getPressure64());
+  Serial.println(digitalRead(10));
 }

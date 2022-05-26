@@ -156,6 +156,6 @@ void loop()
   // Serial.print("Pressure: ");
   // Serial.println(bmx280.getPressure());
   // Serial.print("Pressure (64 bit): ");
-  Serial.println(bmx280.getPressure64());
+  Serial.println(bmx280.getPressure64()/100000);
   Serial.println(digitalRead(10));
 }

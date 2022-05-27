@@ -23,10 +23,7 @@ void setup()
   Serial.begin(9600);
 
   // start msg on display
-  lcd.setCursor(0, 0);
-  lcd.print("Welcome");
-  delay(3000);
-  lcd.clear();
+
 
   // BMP 280 Initial Setup
   while (!Serial)
@@ -59,6 +56,13 @@ void setup()
 
 void loop()
 {
+
+  lcd.setCursor(0, 0);
+  lcd.print("Welcome");
+  lcd.setCursor(0, 1);
+  lcd.print("Please Wait");
+  delay(8000);
+  lcd.clear();
 
   // =========================================== DHT 22 calculations =======================
   float h = dht.readHumidity();
@@ -139,23 +143,19 @@ void loop()
   lcd.clear();
 
   // ====================================== print serial ===========================
-  // Serial.print(F("Humidity: "));
-  Serial.println(h);
-  // Serial.print(F("%  Temperature: "));
-  Serial.println(t);
-  // Serial.print(F("°C "));
-  // Serial.print("\n");
 
-  // Serial.print("UV Sensor : ");
-  // Serial.print("Voltage = ");
-  // Serial.print(voltage);
-  // Serial.print(" | UV index = ");
-  Serial.println(voltage / 0.1);
-  // Serial.print("\n");
+  Serial.print(h);
+  Serial.print(",");
 
-  // Serial.print("Pressure: ");
-  // Serial.println(bmx280.getPressure());
-  // Serial.print("Pressure (64 bit): ");
-  Serial.println(bmx280.getPressure64()/100000);
-  Serial.println(digitalRead(10));
+  Serial.print(t);
+  Serial.print(",");
+
+  Serial.print(voltage / 0.1);
+  Serial.print(",");
+
+  Serial.print(bmx280.getPressure64()/100000);
+  Serial.print(",");
+
+  Serial.print(digitalRead(10));
+  Serial.print("\n");
 }

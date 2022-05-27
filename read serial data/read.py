@@ -1,5 +1,5 @@
-from operator import index
 import serial
+
 
 # firest line humidity
 # second line temp 
@@ -12,3 +12,5 @@ while True:
         while True:
             line = ser.readline().decode('utf-8').rstrip()
             print(line)
+
+            INSERT INTO TABLE_NAME (humidity, temperature,uvindex,pressure,irsensor) VALUES (value1, value2, value3,...valueN);

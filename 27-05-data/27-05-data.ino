@@ -12,7 +12,7 @@ BMx280I2C bmx280(0x76);
 #include <SPI.h>
 
 // init dht 22 sensor
-DHT dht(9, DHT22);
+DHT dht(9, DHT11);
 
 // serial port for LCD
 LiquidCrystal_I2C lcd(0x27, 20, 4);

@@ -23,7 +23,12 @@ void setup()
   Serial.begin(9600);
 
   // start msg on display
-
+  lcd.setCursor(0, 0);
+  lcd.print("Welcome");
+  lcd.setCursor(0, 1);
+  lcd.print("Please Wait");
+  delay(8000);
+  lcd.clear();
 
   // BMP 280 Initial Setup
   while (!Serial)
@@ -56,13 +61,6 @@ void setup()
 
 void loop()
 {
-
-  lcd.setCursor(0, 0);
-  lcd.print("Welcome");
-  lcd.setCursor(0, 1);
-  lcd.print("Please Wait");
-  delay(8000);
-  lcd.clear();
 
   // =========================================== DHT 22 calculations =======================
   float h = dht.readHumidity();
@@ -153,7 +151,7 @@ void loop()
   Serial.print(voltage / 0.1);
   Serial.print(",");
 
-  Serial.print(bmx280.getPressure64()/100000);
+  Serial.print(bmx280.getPressure64() / 100000);
   Serial.print(",");
 
   Serial.print(digitalRead(10));

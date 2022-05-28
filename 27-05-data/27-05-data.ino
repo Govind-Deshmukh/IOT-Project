@@ -22,14 +22,6 @@ void setup()
   // start serial at boud rate of 9600
   Serial.begin(9600);
 
-  // start msg on display
-  lcd.setCursor(0, 0);
-  lcd.print("Welcome");
-  lcd.setCursor(0, 1);
-  lcd.print("Please Wait");
-  delay(8000);
-  lcd.clear();
-
   // BMP 280 Initial Setup
   while (!Serial)
     ;
@@ -51,6 +43,22 @@ void setup()
   // init LCD board
   lcd.init();
   lcd.backlight();
+
+  // start msg on display
+  lcd.setCursor(0, 0);
+  lcd.print("Welcome");
+  lcd.setCursor(0, 1);
+  lcd.print("Please Wait");
+  for (int i = 9; i >= 0; i--)
+  {
+    lcd.setCursor(13, 1);
+    lcd.print(i);
+    lcd.setCursor(15, 1);
+    lcd.print("S");
+    delay(1000);
+    //    lcd.clear();
+  };
+  lcd.clear();
 
   // init DHT 22 sensor
   dht.begin();
@@ -78,7 +86,7 @@ void loop()
   lcd.setCursor(0, 1);
   lcd.print(h);
   lcd.print("  %");
-  delay(4000);
+  delay(6000);
   lcd.clear();
 
   lcd.setCursor(0, 0);
@@ -86,7 +94,7 @@ void loop()
   lcd.setCursor(0, 1);
   lcd.print(t);
   lcd.print(" C");
-  delay(4000);
+  delay(6000);
   lcd.clear();
 
   // ============= IR sensor data gathering from pin 10 ====================
@@ -95,14 +103,14 @@ void loop()
   {
     lcd.setCursor(0, 0);
     lcd.print(F("Door is Closed"));
-    delay(4000);
+    delay(6000);
     lcd.clear();
   }
   else
   {
     lcd.setCursor(0, 0);
     lcd.print(F("Door is Open"));
-    delay(4000);
+    delay(6000);
     lcd.clear();
   }
 
@@ -113,7 +121,7 @@ void loop()
   lcd.setCursor(0, 0);
   lcd.print("UV index : ");
   lcd.print(voltage / 0.1);
-  delay(4000);
+  delay(6000);
   lcd.clear();
 
   //==================================== bmp calculations =======================
@@ -137,7 +145,7 @@ void loop()
   // lcd.setCursor(0,1);
   // lcd.print("Temperature : ");
   // lcd.print(bmx280.getTemperature());
-  delay(4000);
+  delay(6000);
   lcd.clear();
 
   // ====================================== print serial ===========================

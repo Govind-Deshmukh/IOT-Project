@@ -17,6 +17,7 @@ import mysql.connector
 
 from time import time
 import json
+
 class User:
     def __init__(self, id, username, password):
         self.id = id
@@ -40,6 +41,7 @@ mydb = mysql.connector.connect(
 	password = "fVIWjMLvvE",
     database = "uJjQaBfJbk"
 )
+
 video = cv2.VideoCapture(0)
 
 app.secret_key = 'iamgoodboi'
@@ -65,11 +67,15 @@ def video_stream():
 
 @app.route('/camera')
 def camera():
+    if not g.user:
+        return redirect(url_for('login'))
     return render_template('camera.html')
 
 
 @app.route('/video_feed')
 def video_feed():
+    if not g.user:
+        return redirect(url_for('login'))
     return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -98,7 +104,6 @@ def dashboard():
     if not g.user:
         return redirect(url_for('login'))
 
-    
     return render_template('dashboard.html')
 
 @app.route('/')

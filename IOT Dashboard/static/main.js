@@ -31,6 +31,7 @@ function requestData() {
 
     chartTemperatue.series[0].addPoint(data1, true, shiftTemperature);
     chartHumidity.series[0].addPoint(data2, true, shiftHumidity);
+    
     $(".sensor1").text("");
     $(".sensor1").text("Temperature : " + Math.round(data1[1]));
 
@@ -38,7 +39,7 @@ function requestData() {
     $(".sensor2").text("Humidity : " + Math.round(data2[1]));
 
     // call it again after one second
-    setTimeout(requestData, 500);
+    setTimeout(requestData, 1000);
   });
 }
 

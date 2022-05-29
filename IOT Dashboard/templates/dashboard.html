@@ -50,8 +50,6 @@
       type="text/javascript"
       src="http://pubnub.github.io/eon/lib/eon.js"
     ></script>
-
-    
   </head>
   <body>
     <nav class="navbar navbar-expand-lg">
@@ -95,10 +93,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Temperature</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptates, quisquam.
-              </p>
+              <p class="card-text sensor-data-1"></p>
             </div>
           </div>
         </div>
@@ -107,10 +102,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Pressure</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptates, quisquam.
-              </p>
+              <p class="card-text sensor-data-2"></p>
             </div>
           </div>
         </div>
@@ -120,10 +112,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Humidity</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptates, quisquam.
-              </p>
+              <p class="card-text sensor-data-3"></p>
             </div>
           </div>
         </div>
@@ -132,10 +121,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">UV index</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptates, quisquam.
-              </p>
+              <p class="card-text sensor-data-4"></p>
             </div>
           </div>
         </div>
@@ -145,10 +131,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Door status</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptates, quisquam.
-              </p>
+              <p class="card-text sensor-data-5"></p>
             </div>
           </div>
         </div>
@@ -161,7 +144,7 @@
                 <img
                   id="bg"
                   src="{{ url_for('video_feed') }}"
-                  style="width: 300px ;"
+                  style="width: 300px"
                 />
               </p>
             </div>
@@ -169,6 +152,61 @@
         </div>
       </div>
     </div>
+    <script>
+      function requestData() {
+        // Ajax call to get the Data from Flask
+        var requests = $.get("http://127.0.0.1:5000/data");
+
+        var tm = requests.done(function (result) {
+          console.log(result);
+
+          // Time Temperature
+          var data1 = [];
+          data1.push(result[0]);
+          data1.push(result[1]);
+
+          // Time Humidity
+          var data2 = [];
+          data2.push(result[0]);
+          data2.push(result[2]);
+
+          // Time pressuer
+          var data3 = [];
+          data3.push(result[0]);
+          data3.push(result[3]);
+
+          // Time uvindex
+          var data4 = [];
+          data4.push(result[0]);
+          data4.push(result[4]);
+
+          // Time IR index
+          var data5 = [];
+          data5.push(result[0]);
+          data5.push(result[5]);
+
+          $(".sensor-data-1").text("");
+          $(".sensor-data-1").text("Humidity : " + Math.round(data1[1])+" %");
+
+          $(".sensor-data-2").text("");
+          $(".sensor-data-2").text("Temperature : " + Math.round(data2[1])+" °C");
+
+          $(".sensor-data-3").text("");
+          $(".sensor-data-3").text("UV Index : " + Math.round(data3[1]));
+
+          $(".sensor-data-4").text("");
+          $(".sensor-data-4").text("Pressure : " + Math.round(data4[1])+" hPa");
+
+          $(".sensor-data-5").text("");
+          $(".sensor-data-5").text("IR reading : " + Math.round(data5[1]));
+
+          // call it again after one second
+          setTimeout(requestData, 1000);
+        });
+      }
+
+      window.onload = requestData;
+    </script>
     <script
       src="{{url_for('.static', filename='bootstrap.js')}}"
       async

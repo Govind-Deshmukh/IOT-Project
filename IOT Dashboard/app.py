@@ -11,7 +11,8 @@ from flask import (
 )
 
 import cv2
-import numpy
+
+from flask_cors import CORS
 
 import mysql.connector
 
@@ -33,6 +34,7 @@ users.append(User(id=2, username='ayush', password='123456789'))
 
 
 app = Flask(__name__)
+CORS(app)
 
 mydb = mysql.connector.connect(
 	host = "remotemysql.com",
@@ -105,7 +107,7 @@ def dashboard():
 def index():
     return '<h1>Go to login route (/login)</h1>'
 
-@app.route('/datafromiotapp', methods=["GET", "POST"])
+@app.route('/data', methods=["GET", "POST"])
 def data():
     cursor = mydb.cursor(buffered=True)
     cursor.execute("SELECT * FROM testiot WHERE id = (SELECT MAX(id) FROM testiot);")
@@ -121,15 +123,13 @@ def data():
     pressure = data[4]
     irdata = data[5]
     
-    data = [time() * 1000, temperature, humidity,uvindex,pressure,irdata]
+    data = [time() * 1000, humidity, temperature,uvindex,pressure,irdata]
 
     response = make_response(json.dumps(data))
     response.content_type = 'application/json'
     return response
 
-@app.route('/demoupdate', methods=["GET", "POST"])
-def main():
-    return render_template('testliveupdate.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

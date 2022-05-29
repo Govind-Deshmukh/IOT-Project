@@ -4,7 +4,7 @@ var chartHumidity;
 function requestData() {
   // Ajax call to get the Data from Flask
   var requests = $.get("/datafromiotapp");
-  
+
   console.log("Requesting data from Flask");
   console.log(requests);
 
@@ -39,6 +39,7 @@ function requestData() {
 
     // call it again after one second
     setTimeout(requestData, 500);
+
   });
 }
 

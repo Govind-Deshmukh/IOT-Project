@@ -39,7 +39,6 @@ while True:
             try:
                 cursor.execute("INSERT INTO testiot (humidity, temperature, uvindex, pressure, irsensor) VALUES (%s, %s, %s, %s, %s)", (lst[0], lst[1], lst[2], lst[3], lst[4]))
                 mydb.commit()
-                
             except:
                 print("Could not insert data")
             else:

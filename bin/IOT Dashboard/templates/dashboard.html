@@ -92,7 +92,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Temperature</h5>
+              <h5 class="card-title">DHT11</h5>
               <p class="card-text sensor-data-1"></p>
             </div>
           </div>
@@ -101,7 +101,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Pressure</h5>
+              <h5 class="card-title">BME280</h5>
               <p class="card-text sensor-data-2"></p>
             </div>
           </div>
@@ -111,7 +111,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Humidity</h5>
+              <h5 class="card-title">DHT11</h5>
               <p class="card-text sensor-data-3"></p>
             </div>
           </div>
@@ -120,7 +120,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">UV index</h5>
+              <h5 class="card-title">UV S12SD</h5>
               <p class="card-text sensor-data-4"></p>
             </div>
           </div>
@@ -130,7 +130,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Door status</h5>
+              <h5 class="card-title">IR Sensor</h5>
               <p class="card-text sensor-data-5"></p>
             </div>
           </div>
@@ -139,7 +139,7 @@
         <div class="box1 col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Camera Live feed</h5>
+              <h5 class="card-title">RPI Camera feed</h5>
               <p class="card-text">
                 <img
                   id="bg"
@@ -186,22 +186,22 @@
           data5.push(result[5]);
 
           $(".sensor-data-1").text("");
-          $(".sensor-data-1").text("Humidity : " + Math.round(data1[1])+" %");
+          $(".sensor-data-1").text("Humidity : " + result[1]+" %");
 
           $(".sensor-data-2").text("");
-          $(".sensor-data-2").text("Temperature : " + Math.round(data2[1])+" °C");
+          $(".sensor-data-2").text("Temperature : " + result[2]+" °C");
 
           $(".sensor-data-3").text("");
-          $(".sensor-data-3").text("UV Index : " + Math.round(data3[1]));
+          $(".sensor-data-3").text("UV Index : " + result[3]);
 
           $(".sensor-data-4").text("");
-          $(".sensor-data-4").text("Pressure : " + Math.round(data4[1])+" hPa");
+          $(".sensor-data-4").text("Pressure : " + result[4]+" hPa");
 
           $(".sensor-data-5").text("");
-          $(".sensor-data-5").text("IR reading : " + Math.round(data5[1]));
+          $(".sensor-data-5").text("IR reading : " + result[5]);
 
           // call it again after one second
-          setTimeout(requestData, 5000);
+          setTimeout(requestData, 8000);
         });
       }
 

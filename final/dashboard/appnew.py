@@ -1,23 +1,21 @@
-from flask import (
-    Flask,
-    g,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-    Response,
-    make_response
-)
+import cv2
+
+from flask import Flask, render_template, Response, stream_with_context, request, g, redirect, session, url_for, make_response, stream_with_context
 
 import cv2
+
+import numpy
 
 from flask_cors import CORS
 
 import mysql.connector
 
 from time import time
+
 import json
+
+video = cv2.VideoCapture(0)
+
 class User:
     def __init__(self, id, username, password):
         self.id = id
@@ -32,8 +30,8 @@ users.append(User(id=1, username='admin', password='12345678'))
 users.append(User(id=2, username='ayush', password='123456789'))
 
 
-
-app = Flask(__name__)
+app = Flask('__name__')
+app.secret_key = 'iamgoodboi'
 CORS(app)
 
 mydb = mysql.connector.connect(
@@ -42,17 +40,6 @@ mydb = mysql.connector.connect(
 	password = "fVIWjMLvvE",
     database = "uJjQaBfJbk"
 )
-video = cv2.VideoCapture(0)
-
-app.secret_key = 'iamgoodboi'
-
-@app.before_request
-def before_request():
-    g.user = None
-
-    if 'user_id' in session:
-        user = [x for x in users if x.id == session['user_id']][0]
-        g.user = user
 
 def video_stream():
     while True:
@@ -65,6 +52,15 @@ def video_stream():
             yield (b' --frame\r\n' b'Content-type: imgae/jpeg\r\n\r\n' + frame +b'\r\n')
 
 
+@app.before_request
+def before_request():
+    g.user = None
+
+    if 'user_id' in session:
+        user = [x for x in users if x.id == session['user_id']][0]
+        g.user = user
+
+
 @app.route('/camera')
 def camera():
     return render_template('camera.html')
@@ -74,10 +70,10 @@ def camera():
 def video_feed():
     return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/logout', methods=['GET', 'POST'])
-def logout():
-    session.pop('user_id', None)
-    return redirect(url_for('login'))
+@app.route('/')
+def index():
+    return '<h1>Go to login route (/login)</h1>'
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -95,6 +91,11 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
 @app.route('/dashboard')
 def dashboard():
     if not g.user:
@@ -102,10 +103,6 @@ def dashboard():
 
     
     return render_template('dashboard.html')
-
-@app.route('/')
-def index():
-    return '<h1>Go to login route (/login)</h1>'
 
 @app.route('/data', methods=["GET", "POST"])
 def data():
@@ -131,5 +128,14 @@ def data():
 
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/camera')
+def ok():
+    return render_template('camera.html')
+
+
+@app.route('/video_feed')
+def livefeed():
+    return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+app.run(host='0.0.0.0', port='5000', debug=True)

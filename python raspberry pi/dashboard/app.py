@@ -1,45 +1,16 @@
 import cv2
-
-from flask import Flask, render_template, Response, stream_with_context, request, g, redirect, session, url_for, make_response, stream_with_context
-
-import cv2
-
 import numpy
-
+from flask import Flask,g, render_template,session,make_response,redirect,url_for, Response, stream_with_context, request
 from flask_cors import CORS
-
 import mysql.connector
-
 from time import time
-
 import json
 
 video = cv2.VideoCapture(0)
 
-class User:
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    def __repr__(self):
-        return f'<User: {self.username}>'
-
-users = []
-users.append(User(id=1, username='admin', password='12345678'))
-users.append(User(id=2, username='ayush', password='123456789'))
-
-
 app = Flask('__name__')
 app.secret_key = 'iamgoodboi'
 CORS(app)
-
-mydb = mysql.connector.connect(
-	host = "remotemysql.com",
-	user = "uJjQaBfJbk",
-	password = "fVIWjMLvvE",
-    database = "uJjQaBfJbk"
-)
 
 def video_stream():
     while True:
@@ -51,6 +22,24 @@ def video_stream():
             frame = buffer.tobytes()
             yield (b' --frame\r\n' b'Content-type: imgae/jpeg\r\n\r\n' + frame +b'\r\n')
 
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
+mydb = mysql.connector.connect(
+	host = "remotemysql.com",
+	user = "uJjQaBfJbk",
+	password = "fVIWjMLvvE",
+    database = "uJjQaBfJbk"
+)
+users = []
+users.append(User(id=1, username='admin', password='12345678'))
+users.append(User(id=2, username='ayush', password='123456789'))
 
 @app.before_request
 def before_request():
@@ -59,6 +48,7 @@ def before_request():
     if 'user_id' in session:
         user = [x for x in users if x.id == session['user_id']][0]
         g.user = user
+
 
 
 @app.route('/camera')
@@ -126,16 +116,4 @@ def data():
     response.content_type = 'application/json'
     return response
 
-
-
-@app.route('/camera')
-def ok():
-    return render_template('camera.html')
-
-
-@app.route('/video_feed')
-def livefeed():
-    return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-app.run(host='0.0.0.0', port='5000', debug=True)
+app.run(host='0.0.0.0', port='5000', debug=False)
